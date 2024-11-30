@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 private val CAIRO_METRO = mapOf(
     "Line 1" to listOf("Helwan", "Ain Helwan", "Helwan University", "Wadi Hof", "Hadayek Helwan", "El-Masra", "Tura El-Esmant", "Kozzika", "Tura El-Balad", "Sakanat El-Maadi", "Hadayek El-Maadi", "Dar El-Salam", "El-Zahraa", "Mar Girgis", "El-Malek El-Saleh", "El-Sayeda Zeinab", "Saad Zaghloul", "Sadat (Tahrir)", "Gamal Abdel Nasser", "Ahmad Orabi", "El-Shohadaa (Ramses)", "Ghamra", "Demerdash", "Manshiet El-Sadr", "Kobri El-Qobba", "Hammamat El-Qobba", "Saray El-Qobba", "Hadayek El-Zaiton", "Helmeyet El-Zaiton", "El-Matareyya", "Ain Shams", "Ezbet El-Nakhl", "El-Marg", "El-Marg El-Gadidah"),
     "Line 2" to listOf("El-Mounib", "Sakiat Mekky", "Um El-Masryeen", "Giza", "Faisal", "Cairo University", "Al-Bohouth", "Dokki", "Opera", "Sadat (Tahrir)", "Mohammad Naguib", "Attaba", "El-Shohadaa (Ramses)", "Masarra", "Rod El-Farag", "St. Teresa", "El-Khalfawy", "Mezallat", "Koliat El-Zeraa", "Shubra El-Khaima"),
@@ -10,6 +12,11 @@ fun main() {
     val startStation = readLine()?.trim() ?: ""
     print("Please enter your arrival station: ")
     val arrivalStation = readLine()?.trim() ?: ""
+
+    if (startStation == arrivalStation) {
+        println("Invalid stations. Please try again.")
+        return
+    }
 
     // Find the line for both start and arrival stations
     val startLine = findLine(CAIRO_METRO, startStation)
@@ -35,14 +42,19 @@ fun main() {
     }
 
     // Determine direction
-    val direction = if (startIndex < arrivalIndex) {
-        "Towards ${lineStations.last()}"
+    val stations:List<String>
+    val direction:String
+    if (startIndex < arrivalIndex) {
+        direction="Towards ${lineStations.last()}"
+        stations=lineStations.slice(startIndex..arrivalIndex)
     } else {
-        "Towards ${lineStations.first()}"
+        direction="Towards ${lineStations.first()}"
+        stations=lineStations.slice(startIndex downTo arrivalIndex)
     }
 
     // Calculate the number of stations between start and arrival
-    val numberOfStations = Math.abs(startIndex - arrivalIndex)
+    val numberOfStations = abs(startIndex - arrivalIndex)
+
 
     // Print the route information
     println("\nRoute Information:")
@@ -50,7 +62,7 @@ fun main() {
     println("Direction: $direction")
     println("Number of stations: $numberOfStations")
     println("Ticket Price: ${calcTicket(numberOfStations)}")
-    println("Stations: ${lineStations.subList(Math.min(startIndex, arrivalIndex), Math.max(startIndex, arrivalIndex) + 1).joinToString(" -> ")}")
+    println("Stations: ${stations.joinToString(" -> ")}")
 }
 
 fun findLine(metro: Map<String, List<String>>, station: String): String? {
@@ -63,7 +75,8 @@ fun findLine(metro: Map<String, List<String>>, station: String): String? {
 }
 
 fun calcTicket(numberOfStations: Int): Double{
-    return when(Math.abs(numberOfStations)){
+    return when(abs(numberOfStations)){
+        0 -> 0.0
         in 1..9 -> 8.0
         in 10..16 ->10.0
         in 17..23 -> 15.0
