@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.math.abs
 
 fun main() {
     // Metro lines
@@ -12,7 +13,7 @@ fun main() {
     )
     val line2 = listOf(
         "El-Mounib", "Sakiat Mekky", "Um El-Masryeen", "Giza", "Faisal", "Cairo University", "Al-Bohouth", "Dokki",
-        "Opera", "Sadat (Tahrir)", "Mohammad Naguib", "Attaba", "El-Shohadaa (Ramses)", "Masarra", "Rod El-Farag",
+        "Opera", "Sadat (Tahrir)", "Mohammad Naguib", "Attaba", "El-Shohadaa (Ramses)", "Masarra", "Rod El-Farag corridor",
         "St. Teresa", "El-Khalfawy", "Mezallat", "Koliat El-Zeraa", "Shubra El-Khaima"
     )
     val line3 = listOf(
@@ -49,6 +50,8 @@ fun main() {
                 if (index < path.size - 1) print("$station -> ") else print(station)
             }
             println("\nNumber of stops: ${path.size - 1}")
+            println("Estimated Time: ${((path.size-1)*70)/60} Min")
+            println("Cost: ${calcTicket(path.size-1)} L.E")
         } else {
             println("No path found between $startStation and $endStation.")
         }
@@ -95,4 +98,15 @@ fun bfsShortestPath(graph: Map<String, List<String>>, start: String, end: String
     }
 
     return null
+}
+
+
+fun calcTicket(numberOfStations: Int): Double {
+    return when (abs(numberOfStations)) {
+        0 -> 0.0
+        in 1..9 -> 8.0
+        in 10..16 -> 10.0
+        in 17..23 -> 15.0
+        else -> 20.0
+    }
 }
